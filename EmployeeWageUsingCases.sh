@@ -8,6 +8,8 @@ dailyWage=0
 total_woking_hrs=0
 days=0
 
+declare -A Wage
+
 getHours() {
 	dailyHrs=$1
 	case $dailyHrs in
@@ -26,13 +28,17 @@ getHours() {
 
 while [[ total_working_hrs -le 100 && days -le 20 ]]
 do
+	days=$(($days+1))
 	attendance=$((RANDOM%3))
 	hrs=$(getHours $attendance)
-	dailyWage[$days]=$(( $hrs * $WAGE_PER_HR ))
-	total_woking_hrs=$(($total_woking_hrs+$hrs))
-
-days=$(($days+1))
+	dailyWage=$(( $hrs * $WAGE_PER_HR ))
+	total_woking_hrs=$(( $total_woking_hrs+$hrs ))
+	Wage["Day"$days]=$dailyWage
 done
-echo "Total working hours: $total_woking_hrs"
-echo "Days : $days"
-echo "Daily wage: ${dailyWage[@]}"
+
+echo "Daily wage: ${Wage[@]}"
+
+for(( i=0;i<=20;i++ ))
+do
+	echo "Day$i : ${Wage["Day"$i]}"
+done
